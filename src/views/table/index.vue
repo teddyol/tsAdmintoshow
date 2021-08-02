@@ -1,0 +1,114 @@
+<template>
+  <div class="app-container">
+    <el-table v-loading="listLoading"
+              :data="list"
+              highlight-current-row>
+      <el-table-column align="center"
+                       label="ID">
+        <template slot-scope="scope">
+          <span>{{ scope.row.id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="Date">
+        <template slot-scope="scope">
+          <span>{{ scope.row.timestamp | parseTime }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center"
+                       label="Author">
+        <template slot-scope="scope">
+          <span>{{ scope.row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col"
+                       label="Status">
+        <template slot-scope="{ row }">
+          <el-tag :type="row.status | articleStatusFilter">{{
+            row.status
+          }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center"
+                       label="Actions">
+        <template slot-scope="scope">
+          <router-link :to="'/table/edit/' + scope.row.id">
+            <el-button type="primary"
+                       size="small"
+                       icon="el-icon-edit">Edit</el-button>
+          </router-link>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="listParams.page"
+                :limit.sync="listParams.limit"
+                @pagination="getList" />
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Pagination from '@/components/Pagination/index.vue';
+
+@Component({
+  name: 'Table',
+  components: {
+    Pagination
+  }
+})
+export default class extends Vue {
+  private total = 50;
+  private list: any[] = [
+    {
+      id: 1,
+      status: '关闭',
+      timestamp: 1626945245299,
+      autor: '作者1'
+    },
+    {
+      id: 2,
+      status: '开启',
+      timestamp: 1626945245299,
+      autor: '作者2'
+    }
+  ];
+  private listLoading = false;
+  private listParams = {
+    page: 1,
+    limit: 20
+  };
+
+  created() {
+    this.getList();
+  }
+
+  private async getList() {
+    // fix: 移除接口请求
+    // this.listLoading = true;
+    // const { data } = await getArticles(this.listParams);
+    // console.log("列表", data);
+    // this.list = data.items;
+    // this.total = data.total;
+    // // Just to simulate the time of the request
+    // setTimeout(() => {
+    //   this.listLoading = false;
+    // }, 0.5 * 1000);
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.edit-input {
+  padding-right: 100px;
+}
+
+.cancel-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+</style>
